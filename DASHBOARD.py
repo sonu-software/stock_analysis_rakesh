@@ -10,7 +10,3 @@ about_page=st.Page(
 pg= st.navigation(pages=[about_page])
 
 pg.run
-
-st.title("🏠 Home Page")
-st.write("Welcome to the Stock Diary App!")
-
