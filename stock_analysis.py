@@ -53,6 +53,25 @@ def know_stock_on_period(stock_name_query, period):
         raise e
     
 
+
+def know_stock_on_from_to_period(stock_name_query, from_date, to_date):
+    try:
+        stock_data_period=capital_market.price_volume_data(stock_name_query.upper(),from_date=from_date, to_date=to_date)
+
+        new= stock_data_period[["Symbol","Series","OpenPrice","ClosePrice","HighPrice","LowPrice"]]
+        new=new.rename(columns={"Symbol":"SYMBOL" ,"Series":"SERIES","OpenPrice":"OPEN_PRICE","ClosePrice":"CLOSE_PRICE","HighPrice":"HIGH_PRICE","LowPrice":"LOW_PRICE"})
+        final_data_on_period=new[new["SERIES"]=="EQ"]
+        return final_data_on_period
+    
+    except Exception as e:
+        raise e
+
+
+
+
+
+
+
 def get_real_time_data(query):
     try:
         url1= f"https://www.google.com/finance/quote/{query}:NSE"
@@ -84,7 +103,9 @@ def calculate_cpr(final_data):
         pivot= (high_price+ low_price + close_price)/3
         bc=(high_price+ low_price)/2
         tc=(2*pivot)-bc
-        return pivot, bc, tc
+        n_cpr = abs(tc-bc) / pivot
+        
+        return pivot, bc, tc, n_cpr
 
     except Exception as e:
         raise e
@@ -100,10 +121,11 @@ def knowledge_base(stock_date_query):
         return None
     
 
+
 def show_dashboard1():
     st.markdown(f"**DATE** {stock_date_query} ")
-    pivot, bc, tc=calculate_cpr(data_frame)
-    data_frame_calculate={"PIVOT":pivot,"BC":bc,"TC":tc}
+    pivot, bc, tc, n_cpr =calculate_cpr(data_frame)
+    data_frame_calculate={"PIVOT":pivot,"BC":bc,"TC":tc,"NARROW CPR %":n_cpr}
     data_frame_calculate= pd.DataFrame(data_frame_calculate)
     st.dataframe(data_frame)
     st.dataframe(data_frame_calculate)
@@ -113,8 +135,9 @@ def show_dashboard1():
 
     # Display the bar chart
     st.bar_chart(price_df_transposed)
-    st.subheader(f"CURRENT LIVE STOCK PRICE\n ***💰{stock_name_query}  ✅₹ {real_time_data}***")
-    
+
+    st.subheader(f"CURRENT LIVE STOCK PRICE\n ✅**{stock_name_query}💰₹ {real_time_data}***")
+    # Display News Current
     st.subheader(f"📰 Latest news about 📈{stock_name_query}")
     rss_url = f'https://news.google.com/rss/search?q={stock_name_query}&hl=en-US&gl=US&ceid=US:en'
 
@@ -125,29 +148,42 @@ def show_dashboard1():
 
 
 
-def show_dashboard2(data_frame1):
-    for col in ["OPEN_PRICE", "CLOSE_PRICE", "HIGH_PRICE", "LOW_PRICE"]:
-        data_frame1[col] = data_frame1[col].replace({',': ''}, regex=True).astype(float)
-
-    data_frame1=pd.DataFrame({"SYMBOL":[data_frame1["SYMBOL"].iloc[0]],
-                   "SERIES":[data_frame1["SERIES"].iloc[0]],
-                   "OPEN_PRICE":[data_frame1["OPEN_PRICE"].iloc[0]],
-                   "CLOSE_PRICE":[data_frame1["CLOSE_PRICE"].iloc[-1]],
-                   "HIGH_PRICE":[data_frame1["HIGH_PRICE"].max()],
-                   "LOW_PRICE":[data_frame1["LOW_PRICE"].min()]
-                  })
+def show_dashboard2(data_frame):
     
-    pivot,bc,tc=calculate_cpr(data_frame1)
-    data_frame_calculate={"PIVOT":pivot,"BC":bc,"TC":tc}
+    for col in ["OPEN_PRICE", "CLOSE_PRICE", "HIGH_PRICE", "LOW_PRICE"]:
+        data_frame[col] = data_frame[col].replace({',': ''}, regex=True).astype(float)
+    data_frame=pd.DataFrame({"SYMBOL":[data_frame["SYMBOL"].iloc[0]],
+                   "SERIES":[data_frame["SERIES"].iloc[0]],
+                   "OPEN_PRICE":[data_frame["OPEN_PRICE"].iloc[0]],
+                   "CLOSE_PRICE":[data_frame["CLOSE_PRICE"].iloc[-1]],
+                   "HIGH_PRICE":[data_frame["LOW_PRICE"].max()],
+                   "LOW_PRICE":[data_frame["LOW_PRICE"].min()]
+                  })
+    st.markdown(f"📈**{stock_name_query}** 📆 {button_name} ")
+    pivot,bc,tc, n_cpr=calculate_cpr(data_frame)
+    
+
+    data_frame_calculate={"PIVOT":pivot,"BC":bc,"TC":tc,"NARROW CPR %":n_cpr}
     data_frame_calculate= pd.DataFrame(data_frame_calculate)
-    st.dataframe(data_frame1)
+    st.dataframe(data_frame)
     st.dataframe(data_frame_calculate)
-    price_df = data_frame1[["OPEN_PRICE",  "LOW_PRICE","CLOSE_PRICE", "HIGH_PRICE"]]
+    price_df = data_frame[["OPEN_PRICE",  "LOW_PRICE","CLOSE_PRICE", "HIGH_PRICE"]]
     price_df_transposed = price_df.T
     price_df_transposed.columns = ['Value']
 
     # Display the bar chart
     st.bar_chart(price_df_transposed)
+
+    st.subheader(f"CURRENT LIVE STOCK PRICE\n ✅**{stock_name_query}💰₹ {real_time_data}***")
+
+    # Display News Current
+    st.subheader(f"📰 Latest news about 📈{stock_name_query}")
+    rss_url = f'https://news.google.com/rss/search?q={stock_name_query}&hl=en-US&gl=US&ceid=US:en'
+
+    feed = feedparser.parse(rss_url)
+    titles = [entry.title for entry in feed.entries]
+    for i, title in enumerate(titles, start=1):
+        st.write(f"{i} 🟢 {title}")
 
 
 
@@ -166,7 +202,7 @@ def show_dashboard2(data_frame1):
 
 st.set_page_config(layout="wide")
 
-st.title(f"STOCK ANALYSIS by ₹AKESH📈")
+st.title(f":material/finance: STOCK ANALYSIS by ₹AKESH📈")
 st.subheader(f"🅻🅸🆅🅴")
 placeholder=st.empty()
 
@@ -198,7 +234,7 @@ with st.sidebar:
         real_time_data= get_real_time_data(stock_name_query)
         now = datetime.now()
         formatted = now.strftime(f"%d/%b/%Y - %H:%M:%S")
-        placeholder.markdown(f"📈{stock_name_query} 🟢{formatted}  💰₹{real_time_data} ")
+        placeholder.markdown(f"📈{stock_name_query} 🟢{formatted} \n💰₹{real_time_data}")
         
     
 
@@ -208,7 +244,7 @@ if stock_data_date is None:
 
 else:
     st.markdown("_____________________________________________________________________")
-    col1, col2, col3, col4, col5 = st.columns(5)
+    col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 
     with col1:
         button_1day = st.button("1 Day  ")
@@ -225,29 +261,55 @@ else:
     with col5:
         button_1year = st.button("1 Year ")
 
+    with col6:
+        from_date= st.date_input("FROM Date", value="today")
+        from_date_query = from_date.strftime("%d-%m-%Y")
+    
+    with col7:
+        to_date= st.date_input("TO Date", value="today")
+        to_date_query = to_date.strftime("%d-%m-%Y")
+        button_for_date= st.button(f"Search")
+
+    
+    
+    
+    
+    
+
+
 
     data_frame=know_stock_on_date(stock_date_query,stock_name_query)
-    if not button_1month and not button_1week and not button_6month and not button_1year:
+    if not button_1month and not button_1week and not button_6month and not button_1year and not button_for_date:
         show_dashboard1()
 
 
     if button_1day:
+        button_name="1 DAY"
         show_dashboard1()
     
     elif button_1week:
+        button_name="1 WEEK"
         data_frame1=know_stock_on_period(stock_name_query, "1W")
         show_dashboard2(data_frame1)
 
     elif button_1month:
+        button_name="1 MONTH"
         data_frame1=know_stock_on_period(stock_name_query,"1M")
         show_dashboard2(data_frame1)
     
     elif button_6month:
+        button_name="6 MONTH"
         data_frame1=know_stock_on_period(stock_name_query,"6M")
         show_dashboard2(data_frame1)
 
     elif button_1year:
+        button_name="1 YEAR"
         data_frame1=know_stock_on_period(stock_name_query,"1Y")
+        show_dashboard2(data_frame1)
+
+    elif button_for_date:
+        data_frame1=know_stock_on_from_to_period(stock_name_query, from_date_query, to_date_query)
+        button_name=f"{from_date_query} ↔️ {to_date_query}"
         show_dashboard2(data_frame1)
 
 
@@ -255,6 +317,3 @@ else:
         
         
     
-
-
-
