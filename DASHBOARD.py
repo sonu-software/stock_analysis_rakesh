@@ -9,4 +9,4 @@ about_page=st.Page(
 
 pg= st.navigation(pages=[about_page])
 
-pg.run
+pg.run()
