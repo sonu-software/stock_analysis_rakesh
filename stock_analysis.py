@@ -126,6 +126,9 @@ def show_dashboard1():
 
 
 def show_dashboard2(data_frame1):
+    for col in ["OPEN_PRICE", "CLOSE_PRICE", "HIGH_PRICE", "LOW_PRICE"]:
+    data_frame1[col] = data_frame1[col].replace({',': ''}, regex=True).astype(float)
+
     data_frame1=pd.DataFrame({"SYMBOL":[data_frame1["SYMBOL"].iloc[0]],
                    "SERIES":[data_frame1["SERIES"].iloc[0]],
                    "OPEN_PRICE":[data_frame1["OPEN_PRICE"].iloc[0]],
@@ -252,4 +255,5 @@ else:
         
         
     
+
 
