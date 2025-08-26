@@ -1,22 +1,23 @@
 import streamlit as st
 
 #Page Setup#
-about_page=st.Page(
+analysis_page=st.Page(
   page="stock_analysis.py",
-  title="STOCK ANALYSIS",
+  title=" STOCK ANALYSIS",
   icon=":material/finance_mode:",
   default=True,
 )
 
-about_page1=st.Page(
+news_page=st.Page(
   page="page2.py",
-  title="STOCKS NEWS",
+  title=" NEWS",
   icon=":material/breaking_news:"
 )
 
-pg= st.navigation(pages=[about_page, about_page1])
+pg= st.navigation({"MENU":[about_page, about_page1]})
 
 pg.run()
+
 
 
 
