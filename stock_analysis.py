@@ -133,7 +133,7 @@ with st.sidebar:
         real_time_data= get_real_time_data(stock_name_query)
         now = datetime.now()
         formatted = now.strftime(f"%d/%b/%Y - %H:%M:%S")
-        placeholder.markdown(f"📈{stock_name_query} 🟢{formatted}  💰₹{real_time_data} ")
+        placeholder.markdown(f"📈**{stock_name_query}** 🟢{formatted}  💰₹{real_time_data} ")
         
     
 
@@ -169,3 +169,4 @@ else:
 
 
     
+
