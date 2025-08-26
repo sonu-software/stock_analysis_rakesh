@@ -14,10 +14,14 @@ news_page=st.Page(
   icon=":material/breaking_news:"
 )
 
+
 pg= st.navigation({"MENU":[analysis_page, news_page]})
 st.logo("stock-logo.png")
+st.sidebar.markdown("Your Personal Trade Diary")
+
 
 pg.run()
+
 
 
 
