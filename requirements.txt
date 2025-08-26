@@ -1,6 +1,6 @@
 streamlit
 streamlit-autorefresh
-
+feedparser
 altair==5.5.0
 attrs==25.3.0
 beautifulsoup4==4.13.5
@@ -49,4 +49,5 @@ typing_extensions==4.15.0
 tzdata==2025.2
 urllib3==2.5.0
 watchdog==6.0.0
+
 
