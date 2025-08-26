@@ -15,8 +15,10 @@ news_page=st.Page(
 )
 
 pg= st.navigation({"MENU":[analysis_page, news_page]})
+st.logo("stock-logo.png")
 
 pg.run()
+
 
 
 
