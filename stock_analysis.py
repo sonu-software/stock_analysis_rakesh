@@ -161,7 +161,7 @@ def show_dashboard2(data_frame1):
 
     
 
-#st.set_page_config(layout="wide")
+st.set_page_config(layout="wide")
 
 st.title(f"STOCK ANALYSIS by ₹AKESH📈")
 st.subheader(f"🅻🅸🆅🅴")
@@ -252,3 +252,4 @@ else:
         
         
     
+
