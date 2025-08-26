@@ -14,9 +14,10 @@ news_page=st.Page(
   icon=":material/breaking_news:"
 )
 
-pg= st.navigation({"MENU":[about_page, about_page1]})
+pg= st.navigation({"MENU":[analysis_page, news_page]})
 
 pg.run()
+
 
 
 
