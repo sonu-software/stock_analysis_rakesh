@@ -9,18 +9,20 @@ analysis_page=st.Page(
 )
 
 news_page=st.Page(
-  page="page2.py",
+  page="news.py",
   title=" NEWS",
   icon=":material/breaking_news:"
 )
 
 
 pg= st.navigation({"MENU":[analysis_page, news_page]})
-st.logo("stock-logo.png")
+
 st.sidebar.markdown("Your Personal Trade Diary")
+st.logo("stock-logo.png")
 
 
 pg.run()
+
 
 
 
