@@ -7,6 +7,12 @@ about_page=st.Page(
   default=True,
 )
 
+about_page1=st.Page(
+  page="page2.py",
+  title="PAGE 2-",
+)
+
 pg= st.navigation(pages=[about_page])
 
 pg.run()
+
