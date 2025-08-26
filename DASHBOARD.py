@@ -11,12 +11,13 @@ about_page=st.Page(
 about_page1=st.Page(
   page="page2.py",
   title="STOCKS NEWS",
-  icon="<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#75FB4C"><path d="M318.67-418v-298.67h100V-418l-50-48.67-50 48.67Zm196 80.67V-880h100v442.67l-100 100Zm-392 112.66v-328h100v228l-100 100ZM120-118l250-250 146.67 128.67L766-488.67h-80v-66.66h194V-362h-66.67v-80l-294 294-146.66-128-158 158H120Z"/></svg>"
+  icon='<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#75FB4C"><path d="M318.67-418v-298.67h100V-418l-50-48.67-50 48.67Zm196 80.67V-880h100v442.67l-100 100Zm-392 112.66v-328h100v228l-100 100ZM120-118l250-250 146.67 128.67L766-488.67h-80v-66.66h194V-362h-66.67v-80l-294 294-146.66-128-158 158H120Z"/></svg>'
 )
 
 pg= st.navigation(pages=[about_page, about_page1])
 
 pg.run()
+
 
 
 
