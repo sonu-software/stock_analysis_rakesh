@@ -1,4 +1,6 @@
 import streamlit as st
+import calendar
+from datetime import date, timedelta
 
 
 import nselib
@@ -51,6 +53,18 @@ def know_stock_on_period(stock_name_query, period):
     
     except Exception as e:
         raise e
+    
+
+
+    
+
+
+
+
+
+
+
+
     
 
 
@@ -148,7 +162,7 @@ def show_dashboard1():
 
 
 
-def show_dashboard2(data_frame):
+def show_dashboard2(data_frame,button_name):
     
     for col in ["OPEN_PRICE", "CLOSE_PRICE", "HIGH_PRICE", "LOW_PRICE"]:
         data_frame[col] = data_frame[col].replace({',': ''}, regex=True).astype(float)
@@ -188,6 +202,72 @@ def show_dashboard2(data_frame):
 
 
 
+def get_date_range(option):
+    today = date.today()
+    try:
+        if option == "last_week":
+            start_of_this_week = today - timedelta(days=today.weekday())
+            start_of_last_week = start_of_this_week - timedelta(days=7)
+            end_of_last_week = start_of_last_week + timedelta(days=4)
+            return start_of_last_week.strftime("%d-%m-%Y"), end_of_last_week.strftime("%d-%m-%Y")
+            
+        elif option == "last_month":
+            year = today.year if today.month > 1 else today.year - 1
+            month = today.month - 1 if today.month > 1 else 12
+            first_day = date(year, month, 1)
+            last_day = date(year, month, calendar.monthrange(year, month)[1])
+            return first_day.strftime("%d-%m-%Y"), last_day.strftime("%d-%m-%Y")
+    
+        elif option == "past_3_months":
+            # Start: 3 months ago
+            if today.month <= 3:
+                start_year = today.year - 1
+                start_month = today.month + 9
+            else:
+                start_year = today.year
+                start_month = today.month - 3
+    
+            start_date = date(start_year, start_month, 1)
+    
+            # End: last day of previous month
+            end_month = today.month - 1 if today.month > 1 else 12
+            end_year = today.year if today.month > 1 else today.year - 1
+            end_day = calendar.monthrange(end_year, end_month)[1]
+            end_date = date(end_year, end_month, end_day)
+    
+            return start_date.strftime("%d-%m-%Y"), end_date.strftime("%d-%m-%Y")
+    
+        elif option == "past_6_months":
+            # Start: 6 months ago
+            if today.month <= 6:
+                start_year = today.year - 1
+                start_month = today.month + 6
+            else:
+                start_year = today.year
+                start_month = today.month - 6
+    
+            start_date = date(start_year, start_month, 1)
+    
+            # End: last day of previous month
+            end_month = today.month - 1 if today.month > 1 else 12
+            end_year = today.year if today.month > 1 else today.year - 1
+            end_day = calendar.monthrange(end_year, end_month)[1]
+            end_date = date(end_year, end_month, end_day)
+    
+            return start_date.strftime("%d-%m-%Y"), end_date.strftime("%d-%m-%Y")
+    
+        elif option == "past_year":
+            last_year = today.year - 1
+            start_date = date(last_year, 1, 1)
+            end_date = date(last_year, 12, 31)
+            return start_date.strftime("%d-%m-%Y"), end_date.strftime("%d-%m-%Y")
+        else:
+            return None, None
+    except Exception as e:
+        raise e
+
+
+
     
 
 
@@ -201,8 +281,13 @@ def show_dashboard2(data_frame):
     
 
 st.set_page_config(layout="wide")
+#st.markdown("<h1 style='margin-top: 0;'>My App</h1>", unsafe_allow_html=True)
 
+st.image("stock-logo.png",  width= 170)
 st.title(f":material/finance: STOCK ANALYSIS by ₹AKESH📈")
+
+
+
 st.subheader(f"🅻🅸🆅🅴")
 placeholder=st.empty()
 
@@ -244,28 +329,31 @@ if stock_data_date is None:
 
 else:
     st.markdown("_____________________________________________________________________")
-    col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+    col1, col2, col3, col4, col5, col6, col7, col8= st.columns(8)
 
     with col1:
-        button_1day = st.button("1 Day  ")
+        button_1day = st.button("1 D")
 
     with col2:
-        button_1week = st.button("1 Week ")
+        button_1week = st.button("1 W")
 
     with col3:
-        button_1month = st.button("1 Month")
+        button_1month = st.button("1 M")
     
     with col4:
-        button_6month = st.button("6 Month")
+        button_3month = st.button("3 M")
     
     with col5:
-        button_1year = st.button("1 Year ")
-
+        button_6month = st.button("6 M")
+    
     with col6:
+        button_1year = st.button("1 Y")
+
+    with col7:
         from_date= st.date_input("FROM Date", value="today")
         from_date_query = from_date.strftime("%d-%m-%Y")
     
-    with col7:
+    with col8:
         to_date= st.date_input("TO Date", value="today")
         to_date_query = to_date.strftime("%d-%m-%Y")
         button_for_date= st.button(f"Search")
@@ -288,29 +376,45 @@ else:
         show_dashboard1()
     
     elif button_1week:
-        button_name="1 WEEK"
-        data_frame1=know_stock_on_period(stock_name_query, "1W")
-        show_dashboard2(data_frame1)
+        date_range_option= "last_week"
+        from_date, to_date=get_date_range(date_range_option)
+        data_frame1=know_stock_on_from_to_period(stock_name_query, from_date, to_date)
+        button_name=f"**1WEEK** ( {from_date} ↔️ {to_date} ) "
+        show_dashboard2(data_frame1,button_name)
 
     elif button_1month:
-        button_name="1 MONTH"
-        data_frame1=know_stock_on_period(stock_name_query,"1M")
-        show_dashboard2(data_frame1)
+        date_range_option= "last_month"
+        from_date, to_date=get_date_range(date_range_option)
+        data_frame1=know_stock_on_from_to_period(stock_name_query, from_date, to_date)
+        button_name=f"**1MONTH** ( {from_date} ↔️ {to_date} ) "
+        show_dashboard2(data_frame1,button_name)
+    
+    elif button_3month:
+        date_range_option= "past_3_months"
+        from_date, to_date=get_date_range(date_range_option)
+        data_frame1=know_stock_on_from_to_period(stock_name_query, from_date, to_date)
+        button_name=f"**3MONTH** ( {from_date} ↔️ {to_date} ) "
+        show_dashboard2(data_frame1,button_name)
+
     
     elif button_6month:
-        button_name="6 MONTH"
-        data_frame1=know_stock_on_period(stock_name_query,"6M")
-        show_dashboard2(data_frame1)
+        date_range_option= "past_6_months"
+        from_date, to_date=get_date_range(date_range_option)
+        data_frame1=know_stock_on_from_to_period(stock_name_query, from_date, to_date)
+        button_name=f"**6MONTH** ( {from_date} ↔️ {to_date} ) "
+        show_dashboard2(data_frame1,button_name)
 
     elif button_1year:
-        button_name="1 YEAR"
-        data_frame1=know_stock_on_period(stock_name_query,"1Y")
-        show_dashboard2(data_frame1)
+        date_range_option= "past_year"
+        from_date, to_date=get_date_range(date_range_option)
+        data_frame1=know_stock_on_from_to_period(stock_name_query, from_date, to_date)
+        button_name=f"**1YEAR** ( {from_date} ↔️ {to_date} ) "
+        show_dashboard2(data_frame1,button_name)
 
     elif button_for_date:
         data_frame1=know_stock_on_from_to_period(stock_name_query, from_date_query, to_date_query)
-        button_name=f"{from_date_query} ↔️ {to_date_query}"
-        show_dashboard2(data_frame1)
+        button_name=f"**CUSTOM DATE**{from_date_query} ↔️ {to_date_query}"
+        show_dashboard2(data_frame1,button_name)
 
 
 
