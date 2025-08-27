@@ -293,8 +293,8 @@ placeholder=st.empty()
 
 
 with st.sidebar:
-
-    stock_date_query= st.date_input("Choose stock date", value="today")
+    yesterday = date.today() - timedelta(days=1)
+    stock_date_query= st.date_input("Choose stock date", value=yesterday)
     stock_date_query = stock_date_query.strftime("%d-%m-%Y")
 
     stock_data_date= knowledge_base(stock_date_query)
@@ -421,4 +421,5 @@ else:
         
         
     
+
 
