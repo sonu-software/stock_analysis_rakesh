@@ -358,7 +358,7 @@ else:
 
 
     data_frame=know_stock_on_date(stock_date_query,stock_name_query)
-    if not button_1month and not button_1day  and not button_1week and not button_3months and not button_6month and not button_1year and not button_for_date:
+    if not button_1day and not button_1week and not button_1month and not button_3month and not button_6month and not button_1year and not button_for_date:
         show_dashboard1()
 
 
@@ -412,6 +412,7 @@ else:
         
         
     
+
 
 
 
