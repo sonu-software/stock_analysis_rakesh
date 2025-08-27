@@ -332,22 +332,22 @@ else:
     col1, col2, col3, col4, col5, col6, col7, col8= st.columns(8)
 
     with col1:
-        button_1day = st.button("1 D")
+        button_1day = st.button("1DAY")
 
     with col2:
-        button_1week = st.button("1 W")
+        button_1week = st.button("1WEEK")
 
     with col3:
-        button_1month = st.button("1 M")
+        button_1month = st.button("1MONTH")
     
     with col4:
-        button_3month = st.button("3 M")
+        button_3month = st.button("3MONTH")
     
     with col5:
-        button_6month = st.button("6 M")
+        button_6month = st.button("6MONTH")
     
     with col6:
-        button_1year = st.button("1 Y")
+        button_1year = st.button("1YEAR")
 
     with col7:
         from_date= st.date_input("FROM Date", value="today")
@@ -421,3 +421,4 @@ else:
         
         
     
+
