@@ -2,7 +2,6 @@ import streamlit as st
 import calendar
 from datetime import date, timedelta
 
-
 import nselib
 from nselib import capital_market
 
@@ -15,12 +14,8 @@ from bs4 import BeautifulSoup
 
 import feedparser
 
-
-
 #stock_data_date=capital_market.bhav_copy_with_delivery(stock_date_query)
 #stock_data_period=capital_market.price_volume_data(stock_name.upper(), period=period.upper())
-
-
 
 def know_stock_on_date(stock_date_query,stock_name_query):
     try:
@@ -412,6 +407,7 @@ else:
         
         
     
+
 
 
 
